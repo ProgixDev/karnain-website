@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getStripeCredentials } from "@/core/stripe/credentials";
 import { getStripe } from "@/core/stripe/server";
 import { getServiceClient, hasServiceRole } from "@/core/supabase/service";
+import { sendOrderPaidNotification } from "@/features/admin";
 
 /**
  * Stripe webhook — moves an order's status as its Session resolves. Verifies the signature
@@ -54,17 +55,13 @@ export async function POST(request: Request) {
     // recording either way: on an unpaid session they are how the order is identified while it
     // waits.
     case "checkout.session.completed":
-      await supabase
-        .from("orders")
-        .update({ ...buyer, ...(session.payment_status === "paid" ? { status: "paid" } : {}) })
-        .eq("id", orderId);
+      await supabase.from("orders").update(buyer).eq("id", orderId);
+      if (session.payment_status === "paid") await markPaid(orderId);
       break;
 
     case "checkout.session.async_payment_succeeded":
-      await supabase
-        .from("orders")
-        .update({ status: "paid", ...buyer })
-        .eq("id", orderId);
+      await supabase.from("orders").update(buyer).eq("id", orderId);
+      await markPaid(orderId);
       break;
 
     // An abandoned or failed Session would otherwise leave its order `pending` forever, indis-
@@ -81,4 +78,31 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ received: true });
+}
+
+/**
+ * Moves an order to `paid` and notifies the shop — exactly once.
+ *
+ * The update is scoped to a `pending` row and asks for the changed row back, so a redelivered
+ * event (Stripe retries, and `completed` can be followed by `async_payment_succeeded` for the same
+ * session) updates nothing and returns nothing. The email is therefore sent on the transition, not
+ * on the event: one sale, one message.
+ *
+ * `after()` runs it once the 200 is already on its way to Stripe. Waiting on an SMTP handshake
+ * inside the webhook would spend the retry budget on a courtesy email, and a slow mail server
+ * would start looking to Stripe like a failing endpoint.
+ */
+async function markPaid(orderId: string): Promise<void> {
+  const { data } = await getServiceClient()
+    .from("orders")
+    .update({ status: "paid" })
+    .eq("id", orderId)
+    .eq("status", "pending")
+    .select("id");
+
+  if (data?.length) {
+    after(async () => {
+      await sendOrderPaidNotification(orderId);
+    });
+  }
 }

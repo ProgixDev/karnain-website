@@ -100,6 +100,22 @@ WhatsApp, no customer login.
   (`20260908150000_catalog_images_to_studio.sql`, seed updated to match) and the override module,
   its export and its tests are deleted. What an admin sees is what visitors see, and uploading a
   replacement actually replaces it.
+- 2026-09-20: **a paid order now emails `vente@karnain.fr`.** The shop previously notified nobody —
+  orders appeared only in `/admin/commandes`, which is what the client believed WooCommerce was
+  doing for him. Sent over SMTP through the brand's own o2switch mailbox rather than from Vercel,
+  because the domain's SPF authorises o2switch's IP and its DKIM signs what leaves it; a message
+  sent straight from a serverless function would be unauthenticated for this domain and land in
+  spam. A dedicated `no-reply@karnain.fr` mailbox does the sending, so no human mailbox password
+  lives in the environment; `replyTo` is the buyer, so replying in the mailbox answers them.
+- 2026-09-20: the notification fires on the **transition** to paid, not on the event. `markPaid`
+  scopes its update to a `pending` row and asks for the changed row back, so a redelivered event —
+  Stripe retries, and `completed` may be followed by `async_payment_succeeded` for one session —
+  updates nothing and sends nothing. One sale, one email. It runs inside `after()`, so the 200 is
+  already on its way to Stripe: waiting on an SMTP handshake would spend the retry budget on a
+  courtesy email and make a slow mail server look like a failing endpoint.
+- 2026-09-20: mail is **gated on config** like Stripe and Supabase — with no SMTP variables the app
+  builds, tests and runs unchanged and simply sends nothing. `sendMail` returns a boolean and never
+  throws: an order is paid whether or not the shop manages to email about it.
 - 2026-09-08: **`/commande/merci` verifies the `session_id`.** It used to thank anyone who opened
   the URL and empty their bag while doing it. It now honours the id only when it matches an order
   this site created, then asks Stripe for the authoritative `payment_status` — reading our own

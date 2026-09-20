@@ -1,0 +1,6 @@
+# Generated and owned by their tools — formatting them here would mean editing files the repo
+# explicitly forbids touching by hand (AGENTS.md), and pnpm would simply rewrite them anyway.
+pnpm-lock.yaml
+.next
+artifacts
+test-results
