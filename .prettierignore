@@ -4,3 +4,9 @@ pnpm-lock.yaml
 .next
 artifacts
 test-results
+
+# Machine-written daily reports. These arrive from the reporting agent, which commits outside this
+# repo's pre-commit hook, so they land unformatted and break `pnpm verify` on main for everyone
+# else — five times in two weeks before this line existed. `check:docs` still validates their
+# links; only prettier's opinion about their whitespace is dropped.
+docs/reports/daily/
