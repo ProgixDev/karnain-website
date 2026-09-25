@@ -27,7 +27,7 @@
 ## Phase 4 — ship
 
 - [x] T12 ADR 0007 locale routing; docs: overview, feature doc `docs/product/features/i18n.md`, CUJ table, specs index
-- [ ] T13 Report `docs/reports/014-multilingual-site.md`; open PR
+- [x] T13 Report `docs/reports/014-multilingual-site.md`; open PR
 
 ## AC coverage
 
