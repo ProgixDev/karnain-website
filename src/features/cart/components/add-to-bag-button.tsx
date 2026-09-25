@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { getDictionary } from "@/core/i18n";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "../provider";
 import type { CartItemInput } from "../types";
+import { useI18n } from "@/components/i18n/i18n-provider";
 
 type AddToBagButtonProps = {
   item: CartItemInput;
@@ -13,7 +13,8 @@ type AddToBagButtonProps = {
 
 export function AddToBagButton({ item, className }: AddToBagButtonProps) {
   const addItem = useCartStore((state) => state.addItem);
-  const t = getDictionary().cart;
+  const { dict } = useI18n();
+  const t = dict.cart;
   return (
     <Button
       type="button"

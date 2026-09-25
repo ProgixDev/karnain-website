@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
+import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { InstagramIcon } from "@/components/ui/icons";
-import { getDictionary } from "@/core/i18n";
+import { getDictionary, localizeHref } from "@/core/i18n";
+import { getLocale } from "@/core/i18n/server";
 import { emailLink, site } from "@/core/site";
 
 type SiteHeaderProps = {
@@ -11,16 +13,18 @@ type SiteHeaderProps = {
   bag?: React.ReactNode;
 };
 
-export function SiteHeader({ bag }: SiteHeaderProps) {
-  const dict = getDictionary();
+export async function SiteHeader({ bag }: SiteHeaderProps) {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
   const contactHref = emailLink(dict.contact.emailSubject);
+  const items = dict.nav.items.map((item) => ({ ...item, href: localizeHref(locale, item.href) }));
 
   return (
     <header data-site-header className="bg-background/85 sticky top-0 z-40 border-b backdrop-blur">
       <Container className="grid h-16 grid-cols-[1fr_auto_1fr] items-center md:h-20">
         <div className="flex items-center justify-start">
           <nav aria-label={site.name} className="hidden items-center gap-8 md:flex">
-            {dict.nav.items.map((item) => (
+            {items.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -31,7 +35,7 @@ export function SiteHeader({ bag }: SiteHeaderProps) {
             ))}
           </nav>
           <MobileNav
-            items={dict.nav.items}
+            items={items}
             openLabel={dict.nav.openMenu}
             closeLabel={dict.nav.closeMenu}
             brand={site.name}
@@ -39,10 +43,15 @@ export function SiteHeader({ bag }: SiteHeaderProps) {
             contactHref={contactHref}
             instagramUrl={site.instagramUrl}
             instagramLabel={dict.footer.instagram}
+            localeSwitcher={<LocaleSwitcher />}
           />
         </div>
 
-        <Link href="/" aria-label={dict.nav.brandHome} className="justify-self-center">
+        <Link
+          href={localizeHref(locale, "/")}
+          aria-label={dict.nav.brandHome}
+          className="justify-self-center"
+        >
           <Image
             src="/logo.png"
             alt=""
@@ -54,6 +63,7 @@ export function SiteHeader({ bag }: SiteHeaderProps) {
         </Link>
 
         <div className="flex items-center justify-end gap-4">
+          <LocaleSwitcher className="hidden md:flex" />
           <a
             href={site.instagramUrl}
             aria-label={dict.footer.instagram}

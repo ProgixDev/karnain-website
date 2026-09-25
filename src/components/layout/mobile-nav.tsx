@@ -19,6 +19,8 @@ type MobileNavProps = {
   contactHref: string;
   instagramUrl: string;
   instagramLabel: string;
+  /** The language switcher, rendered in the menu footer. */
+  localeSwitcher?: React.ReactNode;
 };
 
 const iconButton =
@@ -33,6 +35,7 @@ export function MobileNav({
   contactHref,
   instagramUrl,
   instagramLabel,
+  localeSwitcher,
 }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const hydrated = useHydrated();
@@ -111,6 +114,7 @@ export function MobileNav({
                 </nav>
 
                 <div className="mt-auto flex items-center justify-between border-t px-6 py-6">
+                  {localeSwitcher}
                   <a
                     href={contactHref}
                     onClick={() => setOpen(false)}

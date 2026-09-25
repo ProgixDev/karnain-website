@@ -1,9 +1,10 @@
 import { getDictionary } from "@/core/i18n";
+import { getLocale } from "@/core/i18n/server";
 import type { ScentNotes as ScentNotesType } from "../types";
 
 /** The head/heart/base pyramid, read-only. Server component. */
-export function ScentNotes({ notes }: { notes: ScentNotesType }) {
-  const t = getDictionary().product;
+export async function ScentNotes({ notes }: { notes: ScentNotesType }) {
+  const t = getDictionary(await getLocale()).product;
   const groups = [
     { label: t.noteHead, items: notes.head },
     { label: t.noteHeart, items: notes.heart },

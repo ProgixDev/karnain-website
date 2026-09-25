@@ -1,16 +1,17 @@
 "use client";
 
 import { BagIcon } from "@/components/ui/icons";
-import { getDictionary } from "@/core/i18n";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { cartCount } from "../lib";
 import { useCartStore } from "../provider";
+import { useI18n } from "@/components/i18n/i18n-provider";
 
 export function BagButton() {
   const count = useCartStore((state) => cartCount(state.lines));
   const openCart = useCartStore((state) => state.openCart);
   const hydrated = useHydrated();
-  const t = getDictionary().cart;
+  const { dict } = useI18n();
+  const t = dict.cart;
 
   return (
     <button

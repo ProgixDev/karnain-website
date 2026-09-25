@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getDictionary } from "@/core/i18n";
+import { getDictionary, localizeHref } from "@/core/i18n";
+import { getLocale } from "@/core/i18n/server";
 import { formatEur } from "@/lib/format";
 import type { Fragrance } from "../types";
 
@@ -11,13 +12,14 @@ type FragranceCardProps = {
 
 /** Fragrance card, linked to its product page. Falls back to a tonal placeholder when a
  * fragrance has no imagery yet. */
-export function FragranceCard({ fragrance, comingSoonLabel }: FragranceCardProps) {
+export async function FragranceCard({ fragrance, comingSoonLabel }: FragranceCardProps) {
+  const locale = await getLocale();
   const image = fragrance.images[0];
-  const badges = getDictionary().badges;
+  const badges = getDictionary(locale).badges;
   const badge = fragrance.isBestSeller ? badges.bestSeller : fragrance.isNew ? badges.new : null;
   return (
     <Link
-      href={`/parfums/${fragrance.slug}`}
+      href={localizeHref(locale, `/parfums/${fragrance.slug}`)}
       aria-label={fragrance.name}
       className="group focus-visible:ring-ring block rounded-md outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
     >
@@ -52,7 +54,7 @@ export function FragranceCard({ fragrance, comingSoonLabel }: FragranceCardProps
             {fragrance.name}
           </h3>
           <p className="text-muted-foreground text-sm">{fragrance.mood}</p>
-          <p className="text-sm">{formatEur(fragrance.priceEur)}</p>
+          <p className="text-sm">{formatEur(fragrance.priceEur, locale)}</p>
         </div>
       </article>
     </Link>

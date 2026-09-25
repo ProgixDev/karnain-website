@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
-import { getDictionary } from "@/core/i18n";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { formatEur } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -11,11 +10,13 @@ import { cartSubtotal } from "../lib";
 import { useCartStore } from "../provider";
 import { CartLineRow } from "./cart-line-row";
 import { CheckoutButton } from "./checkout-button";
+import { useI18n } from "@/components/i18n/i18n-provider";
 
 export function CartView() {
   const lines = useCartStore((state) => state.lines);
   const hydrated = useHydrated();
-  const t = getDictionary().cart;
+  const { dict, locale, href } = useI18n();
+  const t = dict.cart;
 
   return (
     <Container className="py-16 md:py-24">
@@ -27,7 +28,7 @@ export function CartView() {
         <div className="mt-10 flex flex-col items-start gap-4">
           <p className="text-muted-foreground">{t.empty}</p>
           <Link
-            href="/collection"
+            href={href("/collection")}
             className={cn(buttonVariants({ variant: "outline" }), "label-eyebrow")}
           >
             {t.emptyCta}
@@ -43,11 +44,11 @@ export function CartView() {
           <aside className="h-fit space-y-5 lg:sticky lg:top-28">
             <div className="flex items-center justify-between border-b pb-4">
               <span className="label-eyebrow text-muted-foreground">{t.subtotal}</span>
-              <span className="text-xl">{formatEur(cartSubtotal(lines))}</span>
+              <span className="text-xl">{formatEur(cartSubtotal(lines), locale)}</span>
             </div>
             <CheckoutButton />
             <Link
-              href="/collection"
+              href={href("/collection")}
               className="text-muted-foreground hover:text-foreground block text-center text-sm underline-offset-4 hover:underline"
             >
               {t.continue}

@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { getDictionary } from "@/core/i18n";
+import { useI18n } from "@/components/i18n/i18n-provider";
 import { cn } from "@/lib/utils";
 
 export default function FragranceError({ reset }: { reset: () => void }) {
-  const t = getDictionary().product;
+  const { dict, href } = useI18n();
+  const t = dict.product;
   return (
     <Container className="flex flex-col items-center gap-5 py-24 text-center">
       <h1 className="font-serif text-3xl font-light">{t.errorTitle}</h1>
@@ -17,7 +18,7 @@ export default function FragranceError({ reset }: { reset: () => void }) {
           {t.retry}
         </Button>
         <Link
-          href="/#collection"
+          href={href("/#collection")}
           className={cn(buttonVariants({ variant: "outline" }), "label-eyebrow")}
         >
           {t.backToCollection}

@@ -3,16 +3,21 @@ import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion";
 import { buttonVariants } from "@/components/ui/button";
-import { getDictionary } from "@/core/i18n";
+import { getDictionary, isLocale, localizeHref, pageAlternates } from "@/core/i18n";
+import { getLocale } from "@/core/i18n/server";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: getDictionary().maison.title,
-  description: getDictionary().maison.lede,
-};
+type Params = { locale: string };
 
-export default function MaisonPage() {
-  const t = getDictionary().maison;
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = getDictionary(isLocale(locale) ? locale : undefined).maison;
+  return { title: t.title, description: t.lede, alternates: pageAlternates("/maison") };
+}
+
+export default async function MaisonPage() {
+  const locale = await getLocale();
+  const t = getDictionary(locale).maison;
 
   return (
     <>
@@ -59,7 +64,7 @@ export default function MaisonPage() {
             </h2>
             <p className="text-muted-foreground max-w-xl">{t.closingBody}</p>
             <Link
-              href="/collection"
+              href={localizeHref(locale, "/collection")}
               className={cn(buttonVariants({ size: "lg" }), "label-eyebrow mt-2 h-12 px-8")}
             >
               {t.closingCta}
