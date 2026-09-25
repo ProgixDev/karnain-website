@@ -20,3 +20,4 @@ ADRs capture decisions that shape the codebase: what we chose, what we rejected,
 | [0004](0004-ai-harness.md)                 | Repo-as-harness: agent docs, skills, hooks, persona review in CI                                                   | Accepted |
 | [0005](0005-supabase-data-layer.md)        | Supabase for the catalog data layer + admin auth, with seed fallback when unconfigured                             | Accepted |
 | [0006](0006-stripe-checkout-and-orders.md) | Stripe Checkout (hosted) + orders via a service-role write path; admin-managed credentials (spec 012)              | Accepted |
+| [0007](0007-locale-routing.md)             | Locales by URL prefix, French unprefixed; `next/root-params`; product translations in jsonb (spec 014)             | Accepted |

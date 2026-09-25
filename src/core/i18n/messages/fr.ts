@@ -1,7 +1,8 @@
 /**
- * French UI dictionary (single source of user-facing chrome copy).
- * Curly quotes/apostrophes and real ellipses per docs/conventions/copy.md.
+ * French UI dictionary — the reference shape every other locale must match (`Dictionary` is
+ * derived from it). Curly quotes/apostrophes and real ellipses per docs/conventions/copy.md.
  * Domain content (fragrance names, descriptions) lives in the catalog slice, not here.
+ * Hrefs are locale-free paths; `localizeHref` adds the prefix at render time.
  */
 export const fr = {
   nav: {
@@ -199,6 +200,7 @@ export const fr = {
     errorTitle: "Une erreur est survenue",
     errorBody: "Impossible d’afficher cette fragrance pour le moment.",
     retry: "Réessayer",
+    imageAlt: "{fragrance} — visuel {n}",
   },
 
   footer: {
@@ -210,4 +212,17 @@ export const fr = {
     legalNote: "Mentions légales et CGV — bientôt disponibles.",
     rights: "Tous droits réservés.",
   },
-} as const;
+
+  meta: {
+    baseline: "Maison de parfum",
+    description:
+      "Karnain, maison de parfum française. Des fragrances d’exception aux essences les plus nobles, composées à la française.",
+    cartTitle: "Votre panier",
+    thankYouTitle: "Merci",
+  },
+
+  locale: {
+    switchLabel: "Langue",
+    names: { fr: "Français", en: "English", it: "Italiano", es: "Español", de: "Deutsch" },
+  },
+};

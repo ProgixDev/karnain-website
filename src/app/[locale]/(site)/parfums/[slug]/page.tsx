@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/container";
 import { ArrowRightIcon } from "@/components/ui/icons";
-import { getDictionary } from "@/core/i18n";
+import { getDictionary, isLocale, localizeHref, pageAlternates } from "@/core/i18n";
+import { getLocale } from "@/core/i18n/server";
 import { emailLink } from "@/core/site";
 import { AddToBagButton } from "@/features/cart";
 import {
@@ -17,7 +18,7 @@ import {
 } from "@/features/catalog";
 import { formatEur } from "@/lib/format";
 
-type Params = { slug: string };
+type Params = { locale: string; slug: string };
 
 // Catalog data is read with a sessionless Supabase client (no per-request cookies), so this
 // page can stay statically generated; revalidate periodically to pick up admin edits.
@@ -29,35 +30,40 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { slug } = await params;
-  const fragrance = await getFragrance(slug);
+  const { slug, locale: raw } = await params;
+  const locale = isLocale(raw) ? raw : "fr";
+  const fragrance = await getFragrance(slug, locale);
   if (!fragrance) return {};
-  return { title: fragrance.name, description: fragrance.description };
+  return {
+    title: fragrance.name,
+    description: fragrance.description,
+    alternates: pageAlternates(`/parfums/${slug}`),
+  };
 }
 
 export default async function FragrancePage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
-  const fragrance = await getFragrance(slug);
+  const locale = await getLocale();
+  const fragrance = await getFragrance(slug, locale);
   if (!fragrance) notFound();
 
-  const dict = getDictionary();
+  const dict = getDictionary(locale);
   const t = dict.product;
   const [collection, all] = await Promise.all([
-    getCollection(fragrance.collectionSlug),
-    getFragrances(),
+    getCollection(fragrance.collectionSlug, locale),
+    getFragrances(locale),
   ]);
   const others = all.filter((item) => item.slug !== fragrance.slug).slice(0, 4);
+  const imageAlt = (n: number) =>
+    t.imageAlt.replace("{fragrance}", fragrance.name).replace("{n}", String(n));
   const images: GalleryImage[] = fragrance.images.length
-    ? fragrance.images.map((src, index) => ({
-        src,
-        alt: `${fragrance.name} — visuel ${index + 1}`,
-      }))
-    : [1, 2, 3, 4].map((n) => ({ alt: `${fragrance.name} — visuel ${n}` }));
+    ? fragrance.images.map((src, index) => ({ src, alt: imageAlt(index + 1) }))
+    : [1, 2, 3, 4].map((n) => ({ alt: imageAlt(n) }));
 
   return (
     <Container className="py-12 md:py-16">
       <Link
-        href="/collection"
+        href={localizeHref(locale, "/collection")}
         className="label-eyebrow text-muted-foreground hover:text-foreground inline-flex items-center gap-2 transition-colors"
       >
         <ArrowRightIcon className="size-4 rotate-180" />
@@ -76,7 +82,7 @@ export default async function FragrancePage({ params }: { params: Promise<Params
             <p className="text-muted-foreground text-lg">{fragrance.mood}</p>
           </div>
 
-          <p className="text-xl">{formatEur(fragrance.priceEur)}</p>
+          <p className="text-xl">{formatEur(fragrance.priceEur, locale)}</p>
           <div className="text-muted-foreground max-w-prose space-y-4 leading-relaxed">
             {fragrance.description.split("\n\n").map((paragraph, index) => (
               <p key={index}>{paragraph}</p>

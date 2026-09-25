@@ -1,10 +1,10 @@
 "use client";
 
 import { MinusIcon, PlusIcon, TrashIcon } from "@/components/ui/icons";
-import { getDictionary } from "@/core/i18n";
 import { formatEur } from "@/lib/format";
 import { useCartStore } from "../provider";
 import type { CartLine } from "../types";
+import { useI18n } from "@/components/i18n/i18n-provider";
 
 const stepButton =
   "focus-visible:ring-ring hover:bg-accent inline-flex size-7 items-center justify-center rounded-md border outline-none transition-colors focus-visible:ring-2";
@@ -12,7 +12,8 @@ const stepButton =
 export function CartLineRow({ line }: { line: CartLine }) {
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
-  const t = getDictionary().cart;
+  const { dict, locale } = useI18n();
+  const t = dict.cart;
 
   return (
     <li className="flex gap-4 py-5">
@@ -25,9 +26,9 @@ export function CartLineRow({ line }: { line: CartLine }) {
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
           <p className="font-serif text-lg">{line.name}</p>
-          <p className="text-sm">{formatEur(line.priceEur * line.quantity)}</p>
+          <p className="text-sm">{formatEur(line.priceEur * line.quantity, locale)}</p>
         </div>
-        <p className="text-muted-foreground text-sm">{formatEur(line.priceEur)}</p>
+        <p className="text-muted-foreground text-sm">{formatEur(line.priceEur, locale)}</p>
         <div className="mt-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button

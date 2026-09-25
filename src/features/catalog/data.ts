@@ -1,4 +1,7 @@
+import { defaultLocale, type Locale } from "@/core/i18n";
 import { isSupabaseConfigured } from "@/core/supabase/config";
+import { localizeCollection, localizeFragrance } from "./localize";
+import { collectionTranslations, fragranceTranslations } from "./translations";
 import type { Collection, Fragrance } from "./types";
 
 /**
@@ -8,7 +11,9 @@ import type { Collection, Fragrance } from "./types";
  * Supabase rows). The Supabase repository is a `server-only` module imported dynamically only
  * when configured — so this file stays client/test-safe and the site works with zero
  * configuration. Draft visibility is enforced by Supabase RLS (anon sees published only); the
- * seed contains no drafts. Selectors keep stable signatures; nothing downstream changes.
+ * seed contains no drafts. Public selectors take a `locale` and return the catalog as seen in
+ * that language (French on the row, other languages merged from `translations`); admin selectors
+ * always return French, the editable source.
  */
 
 const PRICE_EUR = 195;
@@ -23,7 +28,9 @@ const seedCollections: readonly Collection[] = [
   },
 ];
 
-const seedFragrances: readonly Fragrance[] = [
+type SeedFragrance = Omit<Fragrance, "familyLabel">;
+
+const seedFragrances: readonly SeedFragrance[] = [
   {
     slug: "tobacco",
     family: "Boisés & ambrés",
@@ -146,26 +153,34 @@ const seedFragrances: readonly Fragrance[] = [
   },
 ];
 
-async function allFragrances(): Promise<readonly Fragrance[]> {
+function seedFragrancesIn(locale: Locale): readonly Fragrance[] {
+  return seedFragrances.map((fragrance) =>
+    localizeFragrance(fragrance, fragranceTranslations[fragrance.slug], locale),
+  );
+}
+
+async function allFragrances(locale: Locale): Promise<readonly Fragrance[]> {
   if (isSupabaseConfigured()) {
     const { fetchFragrances } = await import("./supabase-repo");
-    const rows = await fetchFragrances();
+    const rows = await fetchFragrances(locale);
     if (rows) return rows;
   }
-  return seedFragrances;
+  return seedFragrancesIn(locale);
 }
 
-async function allCollections(): Promise<readonly Collection[]> {
+async function allCollections(locale: Locale): Promise<readonly Collection[]> {
   if (isSupabaseConfigured()) {
     const { fetchCollections } = await import("./supabase-repo");
-    const rows = await fetchCollections();
+    const rows = await fetchCollections(locale);
     if (rows) return rows;
   }
-  return seedCollections;
+  return seedCollections.map((collection) =>
+    localizeCollection(collection, collectionTranslations[collection.slug], locale),
+  );
 }
 
-export async function getFragrances(): Promise<readonly Fragrance[]> {
-  return allFragrances();
+export async function getFragrances(locale: Locale = defaultLocale): Promise<readonly Fragrance[]> {
+  return allFragrances(locale);
 }
 
 /**
@@ -180,7 +195,7 @@ async function allFragrancesForAdmin(): Promise<readonly Fragrance[]> {
     const rows = await fetchFragrancesAsAdmin();
     if (rows) return rows;
   }
-  return seedFragrances;
+  return seedFragrancesIn(defaultLocale);
 }
 
 export async function getFragrancesForAdmin(): Promise<readonly Fragrance[]> {
@@ -191,27 +206,48 @@ export async function getFragranceForAdmin(slug: string): Promise<Fragrance | un
   return (await allFragrancesForAdmin()).find((fragrance) => fragrance.slug === slug);
 }
 
-export async function getFeaturedFragrances(limit = 4): Promise<readonly Fragrance[]> {
-  return (await allFragrances()).filter((fragrance) => fragrance.featured).slice(0, limit);
+export async function getFeaturedFragrances(
+  limit = 4,
+  locale: Locale = defaultLocale,
+): Promise<readonly Fragrance[]> {
+  return (await allFragrances(locale)).filter((fragrance) => fragrance.featured).slice(0, limit);
 }
 
-export async function getFragrance(slug: string): Promise<Fragrance | undefined> {
-  return (await allFragrances()).find((fragrance) => fragrance.slug === slug);
+export async function getFragrance(
+  slug: string,
+  locale: Locale = defaultLocale,
+): Promise<Fragrance | undefined> {
+  return (await allFragrances(locale)).find((fragrance) => fragrance.slug === slug);
 }
 
-export async function getCollections(): Promise<readonly Collection[]> {
-  return allCollections();
+export async function getCollections(
+  locale: Locale = defaultLocale,
+): Promise<readonly Collection[]> {
+  return allCollections(locale);
 }
 
-export async function getCollection(slug: string): Promise<Collection | undefined> {
-  return (await allCollections()).find((collection) => collection.slug === slug);
+export async function getCollection(
+  slug: string,
+  locale: Locale = defaultLocale,
+): Promise<Collection | undefined> {
+  return (await allCollections(locale)).find((collection) => collection.slug === slug);
 }
 
-export async function getFragrancesByCollection(slug: string): Promise<readonly Fragrance[]> {
-  return (await allFragrances()).filter((fragrance) => fragrance.collectionSlug === slug);
+export async function getFragrancesByCollection(
+  slug: string,
+  locale: Locale = defaultLocale,
+): Promise<readonly Fragrance[]> {
+  return (await allFragrances(locale)).filter((fragrance) => fragrance.collectionSlug === slug);
 }
+
+/** A scent family: the canonical key used in filter URLs, and its label in the current language. */
+export type ScentFamily = { readonly key: string; readonly label: string };
 
 /** Distinct scent families, in display order. */
-export async function getFamilies(): Promise<readonly string[]> {
-  return [...new Set((await allFragrances()).map((fragrance) => fragrance.family))];
+export async function getFamilies(locale: Locale = defaultLocale): Promise<readonly ScentFamily[]> {
+  const seen = new Map<string, string>();
+  for (const fragrance of await allFragrances(locale)) {
+    if (!seen.has(fragrance.family)) seen.set(fragrance.family, fragrance.familyLabel);
+  }
+  return [...seen].map(([key, label]) => ({ key, label }));
 }

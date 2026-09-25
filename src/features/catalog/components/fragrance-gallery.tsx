@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, m } from "@/components/motion";
 import { ArrowRightIcon, CloseIcon } from "@/components/ui/icons";
-import { getDictionary } from "@/core/i18n";
+import { useI18n } from "@/components/i18n/i18n-provider";
 import { cn } from "@/lib/utils";
 
 /** `src` absent → tonal placeholder; pass a real `src` later and render `next/image` here. */
@@ -73,7 +73,7 @@ type FragranceGalleryProps = {
 export function FragranceGallery({ images, comingSoonLabel }: FragranceGalleryProps) {
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
-  const t = getDictionary().product;
+  const t = useI18n().dict.product;
   const count = images.length;
   const current = images[active] ?? images[0];
 

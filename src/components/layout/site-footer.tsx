@@ -2,11 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { InstagramIcon, MailIcon } from "@/components/ui/icons";
-import { getDictionary } from "@/core/i18n";
+import { LocaleSwitcher } from "@/components/layout/locale-switcher";
+import { getDictionary, localizeHref } from "@/core/i18n";
+import { getLocale } from "@/core/i18n/server";
 import { emailLink, site } from "@/core/site";
 
-export function SiteFooter() {
-  const dict = getDictionary();
+export async function SiteFooter() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
   const year = new Date().getFullYear();
   const linkClass =
     "text-foreground/65 hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors";
@@ -22,7 +25,7 @@ export function SiteFooter() {
         <nav aria-label={dict.footer.maisonTitle} className="flex flex-col items-start gap-3">
           <p className="label-eyebrow text-muted-foreground">{dict.footer.maisonTitle}</p>
           {dict.nav.items.map((item) => (
-            <Link key={item.href} href={item.href} className={linkClass}>
+            <Link key={item.href} href={localizeHref(locale, item.href)} className={linkClass}>
               {item.label}
             </Link>
           ))}
@@ -50,7 +53,10 @@ export function SiteFooter() {
           <p>
             © {year} {site.name}. {dict.footer.rights}
           </p>
-          <p>{dict.footer.legalNote}</p>
+          <div className="flex items-center gap-6">
+            <p>{dict.footer.legalNote}</p>
+            <LocaleSwitcher />
+          </div>
         </Container>
       </div>
     </footer>

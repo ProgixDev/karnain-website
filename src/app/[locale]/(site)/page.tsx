@@ -4,7 +4,8 @@ import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion";
 import { buttonVariants } from "@/components/ui/button";
 import { InstagramIcon, MailIcon } from "@/components/ui/icons";
-import { getDictionary } from "@/core/i18n";
+import { getDictionary, localizeHref } from "@/core/i18n";
+import { getLocale } from "@/core/i18n/server";
 import { emailLink, site } from "@/core/site";
 import {
   FragranceGrid,
@@ -25,11 +26,13 @@ const heroPrimary =
 export const revalidate = 300;
 
 export default async function HomePage() {
-  const dict = getDictionary();
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const href = (path: string) => localizeHref(locale, path);
   const [featured, all, collection] = await Promise.all([
-    getFeaturedFragrances(4),
-    getFragrances(),
-    getCollection("karnain-addicte"),
+    getFeaturedFragrances(4, locale),
+    getFragrances(locale),
+    getCollection("karnain-addicte", locale),
   ]);
 
   // The hero owns the approved product cutouts; the catalog owns the words. Composing the two
@@ -38,7 +41,7 @@ export default async function HomePage() {
     slug: fragrance.slug,
     name: fragrance.name,
     mood: fragrance.mood,
-    href: `/parfums/${fragrance.slug}`,
+    href: href(`/parfums/${fragrance.slug}`),
   }));
 
   return (
@@ -86,7 +89,7 @@ export default async function HomePage() {
             <p>{dict.story.body1}</p>
             <p>{dict.story.body2}</p>
             <Link
-              href="/maison"
+              href={href("/maison")}
               className={cn(buttonVariants({ variant: "outline" }), "label-eyebrow mt-2 gap-2")}
             >
               {dict.story.cta}
@@ -116,7 +119,7 @@ export default async function HomePage() {
             <h2 className="text-background max-w-2xl font-serif text-4xl font-light text-balance md:text-5xl">
               {dict.campaign.title}
             </h2>
-            <Link href="/collection" className={heroPrimary}>
+            <Link href={href("/collection")} className={heroPrimary}>
               {dict.campaign.cta}
             </Link>
           </Reveal>

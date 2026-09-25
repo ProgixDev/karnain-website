@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import { defaultLocale, isLocale, localizeHref } from "@/core/i18n";
 import { getStripeCredentials, isCheckoutLive } from "@/core/stripe/credentials";
 import { checkoutReturnOrigin } from "@/core/stripe/return-url";
 import { getStripe } from "@/core/stripe/server";
@@ -25,12 +26,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "not-configured" });
   }
 
-  let body: { items?: IncomingItem[] };
+  let body: { items?: IncomingItem[]; locale?: unknown };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "invalid-body" }, { status: 400 });
   }
+  // The bag says which language the visitor is browsing in; Stripe's hosted page and the return
+  // URLs follow it. Anything unexpected falls back to French rather than failing the checkout.
+  const locale = isLocale(body.locale) ? body.locale : defaultLocale;
 
   // One catalog read, then look up locally. Resolving each item separately would let a caller
   // turn a single request into as many Supabase round-trips as it sent items.
@@ -72,6 +76,7 @@ export async function POST(request: Request) {
   try {
     session = await getStripe(creds.secretKey).checkout.sessions.create({
       mode: "payment",
+      locale,
       // Everyone pays in euros. Stripe's Adaptive Pricing otherwise converts the total into the
       // buyer's local currency (an Algerian visitor was shown "DZD 31,322.04" for a 195 € bottle),
       // which puts the maison's pricing at the mercy of a daily FX rate and costs conversion
@@ -86,8 +91,8 @@ export async function POST(request: Request) {
           product_data: { name: line.name },
         },
       })),
-      success_url: `${origin}/commande/merci?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/panier`,
+      success_url: `${origin}${localizeHref(locale, "/commande/merci")}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}${localizeHref(locale, "/panier")}`,
       metadata: { order_id: order.id },
     });
   } catch {

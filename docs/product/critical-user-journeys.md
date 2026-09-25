@@ -11,6 +11,7 @@ Adding or changing a CUJ is a product decision — PR must be approved by the pr
 | CUJ-A | Discover the house                           | Open `/` → understand Karnain (hero, signatures, collection, story) → read the maison page (`/maison`) → reach the collection or contact without friction                                            | `e2e/home.spec.ts`, `e2e/maison.spec.ts`               | `home-*`, `maison-*`           |
 | CUJ-B | Explore a fragrance, fill the bag, check out | Open a fragrance → read notes, enlarge the gallery → add to bag → see the bag drawer + subtotal → open the cart page → **Commander** → Stripe Checkout (when configured) → order confirmed (“Merci”) | `e2e/product.spec.ts` (to bag/cart); checkout manual † | `product-*`, `bag-*`, `cart-*` |
 | CUJ-C | Browse the collection                        | Open `/collection` → narrow by scent family (URL-reflected) → open a fragrance                                                                                                                       | `e2e/collection.spec.ts`                               | `collection-*`                 |
+| CUJ-D | Read and shop in another language            | Switch FR → EN (or IT / ES / DE) from any page → read a fragrance in English (notes, description, `€` price) → add to bag → bag and cart in English → switch back to FR on the same page             | `e2e/i18n.spec.ts`                                     | `i18n-*`                       |
 
 ## Rules
 

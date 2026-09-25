@@ -5,18 +5,19 @@ import Link from "next/link";
 import { AnimatePresence, m } from "@/components/motion";
 import { buttonVariants } from "@/components/ui/button";
 import { CloseIcon } from "@/components/ui/icons";
-import { getDictionary } from "@/core/i18n";
 import { formatEur } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { cartSubtotal } from "../lib";
 import { useCartStore } from "../provider";
 import { CartLineRow } from "./cart-line-row";
+import { useI18n } from "@/components/i18n/i18n-provider";
 
 export function CartDrawer() {
   const isOpen = useCartStore((state) => state.isOpen);
   const closeCart = useCartStore((state) => state.closeCart);
   const lines = useCartStore((state) => state.lines);
-  const t = getDictionary().cart;
+  const { dict, locale, href } = useI18n();
+  const t = dict.cart;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -71,7 +72,7 @@ export function CartDrawer() {
               <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
                 <p className="text-muted-foreground">{t.empty}</p>
                 <Link
-                  href="/collection"
+                  href={href("/collection")}
                   onClick={closeCart}
                   className={cn(buttonVariants({ variant: "outline" }), "label-eyebrow")}
                 >
@@ -88,10 +89,10 @@ export function CartDrawer() {
                 <div className="space-y-4 border-t px-6 py-6">
                   <div className="flex items-center justify-between">
                     <span className="label-eyebrow text-muted-foreground">{t.subtotal}</span>
-                    <span className="text-lg">{formatEur(cartSubtotal(lines))}</span>
+                    <span className="text-lg">{formatEur(cartSubtotal(lines), locale)}</span>
                   </div>
                   <Link
-                    href="/panier"
+                    href={href("/panier")}
                     onClick={closeCart}
                     className={cn(buttonVariants({ size: "lg" }), "label-eyebrow h-12 w-full")}
                   >

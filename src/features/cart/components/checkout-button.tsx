@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getDictionary } from "@/core/i18n";
 import { useCartStore } from "../provider";
+import { useI18n } from "@/components/i18n/i18n-provider";
 
 /**
  * Bag → checkout. Asks `/api/checkout` whether online checkout is live (no secret reaches the
@@ -15,7 +15,8 @@ export function CheckoutButton() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [pending, setPending] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
-  const t = getDictionary().cart;
+  const { dict, locale } = useI18n();
+  const t = dict.cart;
 
   useEffect(() => {
     let active = true;
@@ -41,6 +42,7 @@ export function CheckoutButton() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: lines.map((line) => ({ slug: line.slug, quantity: line.quantity })),
+          locale,
         }),
       });
       const data: { url?: string } = await response.json();

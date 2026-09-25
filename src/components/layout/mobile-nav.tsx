@@ -7,6 +7,7 @@ import Link from "next/link";
 import { AnimatePresence, m } from "@/components/motion";
 import { CloseIcon, InstagramIcon, MailIcon, MenuIcon } from "@/components/ui/icons";
 import { useHydrated } from "@/hooks/use-hydrated";
+import { cn } from "@/lib/utils";
 
 type NavItem = { label: string; href: string };
 
@@ -19,6 +20,8 @@ type MobileNavProps = {
   contactHref: string;
   instagramUrl: string;
   instagramLabel: string;
+  /** The language switcher, rendered in the menu footer. */
+  localeSwitcher?: React.ReactNode;
 };
 
 const iconButton =
@@ -33,6 +36,7 @@ export function MobileNav({
   contactHref,
   instagramUrl,
   instagramLabel,
+  localeSwitcher,
 }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const hydrated = useHydrated();
@@ -110,7 +114,15 @@ export function MobileNav({
                   ))}
                 </nav>
 
-                <div className="mt-auto flex items-center justify-between border-t px-6 py-6">
+                {localeSwitcher ? (
+                  <div className="mt-auto border-t px-6 py-5">{localeSwitcher}</div>
+                ) : null}
+                <div
+                  className={cn(
+                    "flex items-center justify-between border-t px-6 py-6",
+                    !localeSwitcher && "mt-auto",
+                  )}
+                >
                   <a
                     href={contactHref}
                     onClick={() => setOpen(false)}

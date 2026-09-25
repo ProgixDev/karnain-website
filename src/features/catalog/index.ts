@@ -1,5 +1,6 @@
 /** Public API for the catalog slice — the only entry point other layers may import. */
-export type { Collection, Fragrance } from "./types";
+export type { Collection, Fragrance, ScentNotes as FragranceNotes } from "./types";
+export type { ScentFamily } from "./data";
 export {
   getCollection,
   getCollections,
