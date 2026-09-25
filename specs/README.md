@@ -40,5 +40,5 @@ ship → /update-docs                           status: shipped; learnings disti
 | [010](010-admin-image-upload/spec.md)         | Admin image upload (Supabase Storage)                 | shipped |
 | [011](011-checkout-orders/spec.md)            | Checkout (Stripe) + orders back office                | shipped |
 | [012](012-admin-integration-settings/spec.md) | Admin-managed integration settings (secure)           | shipped |
-| [014](014-multilingual-site/spec.md)          | Multilingual site (English first)                     | active  |
+| [014](014-multilingual-site/spec.md)          | Multilingual site (EN, IT, ES, DE)                    | shipped |
 | [001-task-list](001-task-list/spec.md)        | Skeleton demo (template reference)                    | example |

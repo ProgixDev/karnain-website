@@ -1,6 +1,6 @@
 # Spec 014 — Multilingual site (English first)
 
-- **Status:** active
+- **Status:** shipped
 - **Type:** feature
 - **Requested by / owner:** Karnain (client, via Ilyes) / Achraf Arabi
 - **Date:** 2026-09-25
