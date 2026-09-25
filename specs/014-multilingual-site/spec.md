@@ -45,15 +45,15 @@ must be additive: a dictionary and a set of product translations, no structural 
 - **AC-5:** Prices display as euros in both languages using the locale's number convention
   (`195,00 €` in French, `€195.00` in English); the Stripe checkout page opens in the visitor's
   language and returns to the localized thank-you and cart pages.
-- **AC-6:** Unknown prefixes (e.g. `/de/collection`) do not render an English or French page by
+- **AC-6:** Unknown prefixes (e.g. `/pt/collection`) do not render an English or French page by
   accident: they are treated as ordinary French paths and 404 as before.
 - **AC-7:** `pnpm verify` green; existing CUJ-A/B/C e2e pass unchanged in French; a new e2e
   covers the English journey (AC-1, AC-3, AC-5) with screenshots.
 
 ## Out of scope
 
-- Italian, Spanish and German content (structure supports them; delivered after the client
-  validates the English).
+- ~~Italian, Spanish and German content~~ — delivered in the same PR on 2026-09-25 at the
+  owner's request (second commit), still AI-drafted and awaiting client review.
 - Editing product translations from the admin (phase 2; translations are seeded by migration).
 - Translating admin screens, the shop notification email, or product names/slugs (brand names
   and URLs stay the same in every language).

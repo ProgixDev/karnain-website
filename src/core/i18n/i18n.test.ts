@@ -10,9 +10,22 @@ import {
 } from "./index";
 
 describe("i18n", () => {
-  it("defaults to French and offers English", () => {
+  it("defaults to French and offers four other languages", () => {
     expect(defaultLocale).toBe("fr");
-    expect(locales).toEqual(["fr", "en"]);
+    expect(locales).toEqual(["fr", "en", "it", "es", "de"]);
+  });
+
+  it("gives every locale a complete dictionary", () => {
+    const keys = (value: unknown): string[] =>
+      value && typeof value === "object"
+        ? Object.entries(value).flatMap(([k, v]) =>
+            keys(v)
+              .map((sub) => `${k}.${sub}`)
+              .concat([k]),
+          )
+        : [];
+    const reference = keys(getDictionary("fr")).sort();
+    for (const locale of locales) expect(keys(getDictionary(locale)).sort()).toEqual(reference);
   });
 
   it("returns the French dictionary with navigation and section copy", () => {
@@ -49,7 +62,8 @@ describe("i18n", () => {
     expect(splitLocale("/en/panier")).toEqual({ locale: "en", path: "/panier" });
     expect(splitLocale("/en")).toEqual({ locale: "en", path: "/" });
     expect(splitLocale("/panier")).toEqual({ locale: "fr", path: "/panier" });
-    expect(splitLocale("/de/panier")).toEqual({ locale: "fr", path: "/de/panier" });
+    expect(splitLocale("/de/panier")).toEqual({ locale: "de", path: "/panier" });
+    expect(splitLocale("/pt/panier")).toEqual({ locale: "fr", path: "/pt/panier" });
     expect(switchLocaleHref("/en/parfums/tobacco", "fr")).toBe("/parfums/tobacco");
     expect(switchLocaleHref("/parfums/tobacco", "en")).toBe("/en/parfums/tobacco");
   });
@@ -58,6 +72,9 @@ describe("i18n", () => {
     expect(localeAlternates("/collection", locales)).toEqual({
       fr: "/collection",
       en: "/en/collection",
+      it: "/it/collection",
+      es: "/es/collection",
+      de: "/de/collection",
       "x-default": "/collection",
     });
   });

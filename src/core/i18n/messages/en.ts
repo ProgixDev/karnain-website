@@ -218,6 +218,6 @@ export const en: Dictionary = {
 
   locale: {
     switchLabel: "Language",
-    names: { fr: "Français", en: "English" },
+    names: { fr: "Français", en: "English", it: "Italiano", es: "Español", de: "Deutsch" },
   },
 };

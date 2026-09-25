@@ -223,6 +223,6 @@ export const fr = {
 
   locale: {
     switchLabel: "Langue",
-    names: { fr: "Français", en: "English" },
+    names: { fr: "Français", en: "English", it: "Italiano", es: "Español", de: "Deutsch" },
   },
 };

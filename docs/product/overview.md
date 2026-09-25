@@ -4,7 +4,7 @@ Karnain is a luxury perfume house based in France (current site: karnain.fr). Th
 project rebuilds the brand’s website as a refined, French-inspired showcase: elegant
 collection and product storytelling, high-quality campaign imagery, and a low-friction
 bag/checkout path — backed by a Supabase-managed catalog and an admin-only back office.
-French by default with English under `/en` (spec 014); other locales are additive.
+French by default, with English, Italian, Spanish and German under their prefix (spec 014).
 
 ## What this product is
 
@@ -50,7 +50,7 @@ evolving away from the current site’s utilitarian look:
 - **Mobile-first and responsive**, French-inspired, visually consistent end to end.
 
 Design tokens (color, type, spacing) live in `src/app/globals.css` per
-[styling conventions](../conventions/styling.md). All copy is French or English and follows
+[styling conventions](../conventions/styling.md). All copy exists in five languages and follows
 [copy conventions](../conventions/copy.md).
 
 ## Commerce, data & platform (v1 decisions)
@@ -69,7 +69,7 @@ Design tokens (color, type, spacing) live in `src/app/globals.css` per
   project; the in-code seed is the fallback when env is absent (e.g. local/CI). See ADR-0005.
 - **Auth: admin-side only.** An authenticated admin manages the catalog at `/admin`
   (Supabase Auth, no public sign-up); visitors are never asked to sign in.
-- **i18n: French default, English shipped.** French keeps the bare URLs, other languages
+- **i18n: French default, four more languages shipped.** French keeps the bare URLs, other languages
   are prefixed; see `docs/product/features/i18n.md` and ADR 0007.
 - **Hosting: Vercel.**
 

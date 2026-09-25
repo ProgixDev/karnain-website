@@ -7,7 +7,7 @@ const dateFormatter = new Intl.DateTimeFormat("en", { dateStyle: "medium" });
 const numberFormatter = new Intl.NumberFormat("en");
 
 // Prices are always euros; only the notation follows the language (`195,00 €` vs `€195.00`).
-const eurLocales = { fr: "fr-FR", en: "en-GB" } as const;
+const eurLocales = { fr: "fr-FR", en: "en-GB", it: "it-IT", es: "es-ES", de: "de-DE" } as const;
 const eurFormatters = new Map<string, Intl.NumberFormat>();
 
 export function formatDate(date: Date | number): string {

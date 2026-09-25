@@ -41,14 +41,20 @@ Stripe Checkout opens in the visitor's language and returns to the localized pag
 - **Playwright honours `PORT`.** Port 3000 was occupied by an unrelated local service and
   Playwright silently reused it, failing every test; `PORT=3210 pnpm e2e` sidesteps that.
 
+## Addendum — Italian, Spanish, German (same PR)
+
+Added on the owner's request the same day: three more dictionaries, product translations for
+the six fragrances and the collection, a second generated migration (applied to production),
+`formatEur` notations, and an e2e case per language (`i18n-home-de.png`). The switcher shows
+FR / EN / IT / ES / DE. All non-French copy is AI-drafted and awaits the client's review.
+
 ## Not in this PR
 
-- Italian, Spanish, German (structure ready; after the client validates the English copy).
 - Admin editing of translations (the product form edits French only).
 - A sitemap with both locales; browser-language auto-redirect.
 
 ## Follow-ups
 
-- Client review of the English copy (AI-drafted).
+- Client review of the English, Italian, Spanish and German copy (AI-drafted).
 - Manual Stripe test-mode checkout from `/en/panier` once run against the live keys.
 - Phase 2 spec: translations tab in the admin product form.

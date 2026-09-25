@@ -60,6 +60,29 @@ test("French stays canonical: /fr redirects, unknown prefixes are 404", async ({
   await expect(page).toHaveURL(/\/collection$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "fr");
 
-  const missing = await page.goto("/de/collection");
+  const missing = await page.goto("/pt/collection");
   expect(missing?.status()).toBe(404);
+});
+
+test("Italian, Spanish and German are served with their own copy and price format", async ({
+  page,
+}) => {
+  const cases = [
+    { locale: "it", addToBag: "Aggiungi al carrello", note: "Lampone", price: "195,00 €" },
+    { locale: "es", addToBag: "Añadir a la cesta", note: "Frambuesa", price: "195,00 €" },
+    { locale: "de", addToBag: "In den Warenkorb", note: "Himbeere", price: "195,00 €" },
+  ];
+  for (const c of cases) {
+    await page.goto(`/${c.locale}/parfums/tobacco`);
+    await expect(page.locator("html")).toHaveAttribute("lang", c.locale);
+    await expect(page.getByRole("button", { name: c.addToBag })).toBeVisible();
+    await expect(page.getByText(c.note, { exact: false }).first()).toBeVisible();
+    await expect(page.getByText(c.price).first()).toBeVisible();
+    await expect(page.locator(`link[rel="alternate"][hreflang="${c.locale}"]`)).toHaveAttribute(
+      "href",
+      new RegExp(`/${c.locale}/parfums/tobacco$`),
+    );
+  }
+  await page.goto("/de");
+  await shot(page, "i18n-home-de");
 });
