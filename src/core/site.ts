@@ -10,7 +10,7 @@ export const site = {
   url: "https://www.karnain.fr",
   // TODO(client): replace placeholders with the real channels.
   contactEmail: "contact@karnain.fr",
-  instagramUrl: "https://www.instagram.com/karnain",
+  instagramUrl: "https://www.instagram.com/karnain_paris",
 } as const;
 
 /** Build a `mailto:` link with an optional subject. */
