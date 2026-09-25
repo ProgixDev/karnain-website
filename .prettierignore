@@ -10,3 +10,6 @@ test-results
 # else — five times in two weeks before this line existed. `check:docs` still validates their
 # links; only prettier's opinion about their whitespace is dropped.
 docs/reports/daily/
+
+# Local cache of the gstack tooling (git-ignored by its own .gitignore, which prettier does not read).
+.gstack

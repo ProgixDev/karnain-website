@@ -106,6 +106,10 @@ export const fr = {
     closingCta: "Découvrir la collection",
   },
 
+  maisonStrip: {
+    alt: "Les six fragrances Karnain, chacune sur sa matière : vanille, cuir, cerise, chocolat, rose et tabac.",
+  },
+
   campaign: {
     eyebrow: "La maison Karnain",
     title: "Six fragrances d’exception. Une signature.",
@@ -114,7 +118,7 @@ export const fr = {
 
   instagram: {
     eyebrow: "Suivez-nous",
-    handle: "@karnain",
+    handle: "@karnain_paris",
     cta: "Nous suivre sur Instagram",
   },
 

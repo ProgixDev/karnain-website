@@ -95,12 +95,22 @@ export default async function HomePage() {
         </Container>
       </section>
 
+      <section className="relative aspect-[1672/767] w-full border-t">
+        <Image
+          src="/images/maison-strip.png"
+          alt={dict.maisonStrip.alt}
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+      </section>
+
       <section className="relative overflow-hidden border-t">
         <div className="absolute inset-0">
           <Image src="/images/campaign.png" alt="" fill sizes="100vw" className="object-cover" />
           <div className="bg-foreground/45 absolute inset-0" />
         </div>
-        <Container className="relative flex min-h-[58vh] flex-col items-center justify-center gap-5 py-24 text-center">
+        <Container className="relative flex min-h-[58vh] flex-col items-center justify-center gap-5 py-24 text-center md:min-h-[80vh]">
           <Reveal className="flex flex-col items-center gap-5">
             <p className="label-eyebrow text-background/80">{dict.campaign.eyebrow}</p>
             <h2 className="text-background max-w-2xl font-serif text-4xl font-light text-balance md:text-5xl">
