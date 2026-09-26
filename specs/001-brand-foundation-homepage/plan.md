@@ -1,5 +1,19 @@
 # Plan 001 — Brand foundation & luxury homepage
 
+## Hero bottle correction — 2026-09-26
+
+Quick-track asset correction based on the six client-supplied bottle references:
+
+1. Generate one transparent bottle per reference with the built-in imagegen tool, preserving
+   the bottle silhouette, gold cap, cream label, serif wording and liquid colour.
+2. Inspect all six outputs, retain the generation prompts, and prepare compressed WebP assets
+   with a common canvas and bottle height. Keep earlier assets recoverable.
+3. Update the hero sprite references and both animated/still frame proportions together.
+4. Run `pnpm verify`, e2e and desktop/mobile hero screenshots, including reduced motion.
+   Inspect the screenshots for clipping, label legibility and correct fragrance mapping.
+5. Record the new asset provenance truthfully: generated from supplied references, not camera
+   photographs or a guarantee of pixel-identical reproduction.
+
 How we build the spec, within the layer model (`app → features → shared → core`) and the
 conventions. No boundary crossings; the catalog is the only feature slice.
 

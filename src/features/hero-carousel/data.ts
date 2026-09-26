@@ -3,16 +3,16 @@ import type { HeroFragranceVisual } from "./types";
 const SPRITES = "/images/hero/sprites";
 
 function productCutout(name: string) {
-  return `${SPRITES}/${name}_center-photo.webp`;
+  return `${SPRITES}/${name}_center-reference-v2.webp`;
 }
 
 /**
  * Per-fragrance look for the studio hero.
  *
- * The sprites are the client's own product photographs of the physical bottles, shot on seamless
- * black in one session and cut to transparency: same front-facing composition, same fill level,
- * same light, so only the liquid colour and the printed label change between fragrances. Each
- * bottle is scaled to one common height, so the turntable never appears to resize the product.
+ * The sprites are generated from the six client-supplied September 2026 references, preserving
+ * their broad gold caps, cream serif labels and fragrance-specific liquid colours. They are
+ * generated reconstructions, not camera photographs. Each transparent bottle is scaled to a
+ * common 1400 px height on an 800 × 1480 canvas so it stays consistent across the turntable.
  * The cutouts sit over a restrained, liquid-matched sweep.
  *
  * The array order is the carousel order: it opens on Tobacco, the house signature. Fragrance
