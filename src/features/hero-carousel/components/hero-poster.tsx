@@ -25,7 +25,7 @@ export function HeroPoster({ activeIndex, alt }: HeroPosterProps) {
       {heroFragranceVisuals.map((visual, index) => (
         <div
           key={visual.slug}
-          className="absolute top-0 left-1/2 aspect-[376/783] h-full -translate-x-1/2 transition-opacity duration-700 ease-out motion-reduce:transition-none"
+          className="absolute top-0 left-1/2 aspect-[800/1480] h-full -translate-x-1/2 transition-opacity duration-700 ease-out motion-reduce:transition-none"
           style={{ opacity: index === activeIndex ? 1 : 0 }}
         >
           <div

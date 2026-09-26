@@ -171,7 +171,7 @@ function BottleSprite({ ref, visual, priority, onFirstLoad }: BottleSpriteProps)
   return (
     <div
       ref={ref}
-      className="absolute top-0 left-1/2 aspect-[376/783] h-full will-change-transform"
+      className="absolute top-0 left-1/2 aspect-[800/1480] h-full will-change-transform"
       style={{ transformOrigin: "50% 100%" }}
     >
       {/* Floor shadow: an ellipse tinted to the liquid, feathered hard so it never reads as a disc. */}

@@ -37,7 +37,17 @@ No checkout, no customer login — purchase converts through inquiry.
 
 ## Decisions & gotchas
 
-- 2026-09-03: the hero carousel now runs on the client's **real product photographs** —
+- 2026-09-26: the hero now uses six **generated reconstructions of client-supplied bottle
+  references**, `public/images/hero/sprites/*_center-reference-v2.webp`. These supersede the
+  September 3 assets after the client reported a mismatch. The new references determine the
+  broad gold caps, cream serif labels and red/pink/amber liquid colours. Every sprite has a
+  transparent 800 × 1480 canvas and a 1400 px bottle height; both stage and reduced-motion
+  poster use that ratio. Earlier sets remain recoverable. See the
+  [generation prompts](../../reports/hero-bottle-reference-prompts.md).
+- Asset provenance rule: never describe generated or unverified supplied imagery as photographs
+  of physical products. Compare new bottle assets with the current client references, including
+  spelling, colour and proportions, before switching the hero.
+- 2026-09-03 (superseded): the hero carousel used assets previously described as real product photographs —
   `public/images/hero/sprites/*_center-photo.webp`. The six bottles were shot in one session on
   seamless black; the sprites are silhouette cutouts of those frames (edges un-premultiplied so
   no black fringe survives on the pale sweep), each scaled to one common bottle height and seated
